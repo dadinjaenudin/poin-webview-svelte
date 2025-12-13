@@ -98,7 +98,9 @@
     // - Send to API
     // - Show member info
     // - Update points
-    alert(`Member Code Scanned:\n${decodedText}`);
+    
+    // Note: Alert removed to allow auto-close to work
+    // Scanner will show result and auto-close after 2 seconds
   }
   
   function handleScannerClose() {
