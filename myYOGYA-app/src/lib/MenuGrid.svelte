@@ -5,7 +5,10 @@
   let lastScanResult = null;
   
   // Debug: Watch showScanner changes
-  $: console.log('MenuGrid reactive: showScanner =', showScanner);
+  $: {
+    console.log('MenuGrid reactive: showScanner =', showScanner);
+    console.log('MenuGrid: This should update Scanner via bind:isOpen');
+  }
   
   const menuItems = [
     {
@@ -169,11 +172,13 @@
 </div>
 
 <!-- Scanner Component -->
-<Scanner 
-  bind:isOpen={showScanner}
-  onScanSuccess={handleScanSuccess}
-  onClose={handleScannerClose}
-/>
+{#if showScanner}
+  <Scanner 
+    isOpen={true}
+    onScanSuccess={handleScanSuccess}
+    onClose={handleScannerClose}
+  />
+{/if}
 
 <style>
   .menu-container {

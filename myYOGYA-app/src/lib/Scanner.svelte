@@ -13,7 +13,10 @@
   let initCalled = false; // Track if init already called
   
   // Debug: Watch isOpen changes with explicit dependency
-  $: isOpen, console.log('Scanner isOpen changed:', isOpen);
+  $: {
+    console.log('Scanner isOpen changed:', isOpen);
+    console.log('Scanner component is receiving prop changes');
+  }
   
   function handleScanSuccess(decodedText, decodedResult) {
     console.log(`Scan result: ${decodedText}`, decodedResult);
