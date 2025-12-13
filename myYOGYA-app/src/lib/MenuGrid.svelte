@@ -76,7 +76,14 @@
     // Open scanner if "Scan Member" clicked
     if (item.icon === 'scan') {
       console.log('Opening scanner...');
+      console.log('showScanner before:', showScanner);
       showScanner = true;
+      console.log('showScanner after:', showScanner);
+      
+      // Force reactivity update
+      setTimeout(() => {
+        console.log('showScanner in timeout:', showScanner);
+      }, 100);
       return;
     }
     
@@ -155,7 +162,7 @@
 
 <!-- Scanner Component -->
 <Scanner 
-  isOpen={showScanner}
+  bind:isOpen={showScanner}
   onScanSuccess={handleScanSuccess}
   onClose={handleScannerClose}
 />

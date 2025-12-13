@@ -90,10 +90,15 @@
   }
   
   // Watch for isOpen changes
-  $: if (isOpen && !scanner) {
-    setTimeout(initScanner, 100);
-  } else if (!isOpen && scanner) {
-    handleClose();
+  $: {
+    console.log('Scanner reactive: isOpen =', isOpen, 'scanner =', !!scanner);
+    if (isOpen && !scanner) {
+      console.log('Scanner: Initializing...');
+      setTimeout(initScanner, 100);
+    } else if (!isOpen && scanner) {
+      console.log('Scanner: Closing...');
+      handleClose();
+    }
   }
   
   onDestroy(() => {
