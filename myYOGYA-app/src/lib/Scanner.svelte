@@ -11,6 +11,11 @@
   let scanError = '';
   let isScanning = false;
   
+  // Debug: Watch isOpen changes
+  $: {
+    console.log('Scanner isOpen changed:', isOpen);
+  }
+  
   function handleScanSuccess(decodedText, decodedResult) {
     console.log(`Scan result: ${decodedText}`, decodedResult);
     scanResult = decodedText;
@@ -99,7 +104,7 @@
 </script>
 
 {#if isOpen}
-  <div class="scanner-overlay" role="dialog" aria-modal="true" on:click|self={handleClose} on:keydown={(e) => e.key === 'Escape' && handleClose()}>
+  <div class="scanner-overlay" role="dialog" aria-modal="true" tabindex="-1" on:click|self={handleClose} on:keydown={(e) => e.key === 'Escape' && handleClose()}>
     <div class="scanner-container">
       <div class="scanner-header">
         <h2>Scan QR Code / Barcode</h2>

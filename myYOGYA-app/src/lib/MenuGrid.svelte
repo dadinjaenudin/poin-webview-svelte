@@ -71,8 +71,11 @@
   ];
 
   function handleMenuClick(item) {
+    console.log('Menu clicked:', item.title, item.icon);
+    
     // Open scanner if "Scan Member" clicked
     if (item.icon === 'scan') {
+      console.log('Opening scanner...');
       showScanner = true;
       return;
     }
