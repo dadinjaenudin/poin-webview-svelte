@@ -3,6 +3,8 @@
   import UserGreeting from './lib/UserGreeting.svelte';
   import MenuGrid from './lib/MenuGrid.svelte';
   import Insights from './lib/Insights.svelte';
+  import PromoWeekly from './lib/PromoWeekly.svelte';
+  import Videos from './lib/Videos.svelte';
   import BottomNav from './lib/BottomNav.svelte';
 </script>
 
@@ -13,6 +15,8 @@
       <UserGreeting />
       <MenuGrid />
       <Insights />
+      <PromoWeekly />
+      <Videos />
     </div>
     <BottomNav />
   </div>
