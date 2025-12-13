@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Scanner</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        button {
+            padding: 15px 30px;
+            font-size: 18px;
+            background: linear-gradient(135deg, #d32f2f 0%, #ff6b35 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        button:hover {
+            opacity: 0.9;
+        }
+        #status {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Scanner Button</h1>
+    <p>Klik tombol di bawah untuk test scanner:</p>
+    
+    <button onclick="testScanner()">🔍 Test Scan Member</button>
+    
+    <div id="status"></div>
+    
+    <script>
+        function testScanner() {
+            const status = document.getElementById('status');
+            status.innerHTML = '<h3>✅ Button Clicked!</h3><p>Scanner should open in the real app.</p>';
+            console.log('Test button clicked successfully');
+            
+            // Test if we can access the app
+            fetch('/')
+                .then(response => {
+                    status.innerHTML += '<p>✅ Server is running</p>';
+                })
+                .catch(error => {
+                    status.innerHTML += '<p>❌ Server error: ' + error.message + '</p>';
+                });
+        }
+        
+        // Log when page loads
+        console.log('Test page loaded');
+        document.getElementById('status').innerHTML = '<p>Page loaded. Click button to test.</p>';
+    </script>
+</body>
+</html>

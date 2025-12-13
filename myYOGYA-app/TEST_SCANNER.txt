@@ -1,0 +1,70 @@
+╔══════════════════════════════════════════════════════════════════════╗
+║              🔍 TEST SCANNER BUTTON - INSTRUCTIONS                   ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+📱 LIVE URL (NEW PORT):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🌐 https://5174-ihgvy8prmtiz9nb3otr5u-583b4d74.sandbox.novita.ai
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⚠️ IMPORTANT: Server port changed to 5174 after restart!
+
+✅ TESTING STEPS:
+1. Buka URL di atas di browser (mobile or desktop)
+2. Hard refresh: Ctrl+Shift+R (Windows) or Cmd+Shift+R (Mac)
+3. Scroll ke Menu Grid section
+4. Cari button "Scan Member" (orange dengan icon QR code)
+5. Klik button tersebut
+6. Scanner modal harus terbuka
+7. Allow camera permission jika diminta
+8. Test scan QR code atau barcode
+
+🐛 IF BUTTON NOT WORKING:
+1. Open DevTools (F12)
+2. Go to Console tab
+3. Click button and check logs:
+   - Should see: "Menu clicked: Scan scan"
+   - Should see: "Opening scanner..."
+   - Should see: "Scanner isOpen changed: true"
+
+4. If no logs appear:
+   - Try incognito/private mode
+   - Clear browser cache
+   - Try different browser
+
+🔧 DIAGNOSTIC COMMANDS (in browser console):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// Check if button exists
+document.querySelectorAll('.menu-item').length
+// Should show: 9
+
+// Click Scan Member button manually
+document.querySelectorAll('.menu-item')[1].click()
+// (Index 1 is 2nd button = Scan Member)
+
+// Check if Scanner component loaded
+document.querySelector('.scanner-overlay')
+// Should show element or null
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📝 EXPECTED BEHAVIOR:
+✓ Click button → Console logs appear
+✓ Scanner modal opens (full-screen overlay)
+✓ Camera activates (after permission granted)
+✓ Scan detection works
+✓ Success message shows
+✓ Auto-close after 2 seconds
+
+❌ IF NOT WORKING:
+Read TROUBLESHOOTING.md file for detailed solutions
+
+🎯 STATUS:
+- Server: Running on port 5174
+- Scanner Component: Installed (html5-qrcode)
+- Debug Logs: Added
+- Expected: Should work after hard refresh
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Created: 2025-12-13  |  Server Port: 5174  |  Status: Testing Required
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
