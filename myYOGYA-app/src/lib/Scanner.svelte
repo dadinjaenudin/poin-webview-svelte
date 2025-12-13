@@ -176,22 +176,12 @@
     console.log('Scanner: handleClose called - scanner:', !!scanner);
     console.log('Scanner: isOpen before:', isOpen);
     
-    if (scanner) {
-      scanner.clear().catch(err => console.error('Error clearing scanner:', err));
-      scanner = null;
-    }
-    
-    isScanning = false;
-    initCalled = false; // Reset init flag
-    scanResult = '';
-    scanError = '';
-    
-    // Set isOpen to false (this will trigger parent to hide scanner via binding)
+    // Set isOpen to false
+    // This will trigger the reactive statement to do cleanup
     isOpen = false;
-    console.log('Scanner: isOpen after:', isOpen);
+    console.log('Scanner: isOpen set to false');
     
-    // Also call the callback if provided
-    console.log('Scanner: About to call onClose callback');
+    // Call the callback if provided
     if (onClose) {
       onClose();
       console.log('Scanner: onClose callback executed');
@@ -201,34 +191,44 @@
   // Watch for isOpen changes - explicit reactive statements
   $: console.log('Scanner reactive: isOpen =', isOpen, 'scanner =', !!scanner, 'initCalled =', initCalled);
   
-  $: if (!isOpen && scanner) {
-    console.log('Scanner: Closing...');
-    handleClose();
+  // When isOpen becomes true, initialize scanner
+  $: if (isOpen && !scanner && !initCalled) {
+    console.log('Scanner: isOpen changed to true, initializing...');
+    // Add body scroll lock when opening
+    document.body.classList.add('modal-open');
+    // Wait for DOM to be ready
+    setTimeout(() => {
+      initScanner();
+    }, 200);
   }
   
-  // Mount lifecycle - init scanner when component mounts
+  // When isOpen becomes false, cleanup
+  $: if (!isOpen && scanner) {
+    console.log('Scanner: isOpen changed to false, cleaning up...');
+    // Remove body scroll lock when closing
+    document.body.classList.remove('modal-open');
+    // Clear scanner
+    if (scanner) {
+      scanner.clear().catch(err => console.error('Error clearing scanner:', err));
+      scanner = null;
+    }
+    isScanning = false;
+    initCalled = false;
+    scanResult = '';
+    scanError = '';
+  }
+  
+  // Mount lifecycle - component is now always mounted
   onMount(() => {
-    console.log('Scanner onMount - isOpen:', isOpen, 'DOM ready');
-    
-    // Prevent body scroll when modal opens
-    document.body.classList.add('modal-open');
-    
-    // Wait for DOM to be fully ready
-    setTimeout(() => {
-      const element = document.getElementById('qr-reader');
-      console.log('qr-reader element exists:', !!element);
-      
-      if (isOpen && !initCalled) {
-        console.log('Scanner: Init from onMount with delay');
-        initScanner();
-      }
-    }, 200); // Increased delay to ensure DOM is ready
+    console.log('Scanner onMount - Component mounted, isOpen:', isOpen);
+    // Note: Scanner initialization is now handled by reactive statement
+    // This ensures it works both on mount and when isOpen changes later
   });
   
   onDestroy(() => {
-    console.log('Scanner onDestroy');
+    console.log('Scanner onDestroy - Component being destroyed');
     
-    // Re-enable body scroll when modal closes
+    // Cleanup on component destruction
     document.body.classList.remove('modal-open');
     
     if (scanner) {
