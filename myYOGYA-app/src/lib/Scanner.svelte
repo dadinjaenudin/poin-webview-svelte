@@ -237,9 +237,8 @@
   });
 </script>
 
-{#if isOpen}
-  <div class="scanner-overlay" role="dialog" aria-modal="true" tabindex="-1" on:click|self={handleClose} on:keydown={(e) => e.key === 'Escape' && handleClose()}>
-    <div class="scanner-container">
+<div class="scanner-overlay" class:visible={isOpen} role="dialog" aria-modal="true" tabindex="-1" on:click|self={handleClose} on:keydown={(e) => e.key === 'Escape' && handleClose()}>
+  <div class="scanner-container">
       <div class="scanner-header">
         <h2>Scan QR Code / Barcode</h2>
         <button class="close-btn" aria-label="Close scanner" on:click={handleClose}>
@@ -293,8 +292,7 @@
         {/if}
       </div>
     </div>
-  </div>
-{/if}
+</div>
 
 <style>
   .scanner-overlay {
@@ -308,8 +306,18 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    animation: fadeIn 0.3s ease;
     overflow: hidden; /* Prevent scrolling */
+    
+    /* Hidden by default */
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  
+  .scanner-overlay.visible {
+    /* Show when visible class is present */
+    opacity: 1;
+    pointer-events: auto;
   }
   
   /* Prevent body scroll when modal is open */

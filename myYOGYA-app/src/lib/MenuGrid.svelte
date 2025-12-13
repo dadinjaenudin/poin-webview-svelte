@@ -4,6 +4,9 @@
   let showScanner = false;
   let lastScanResult = null;
   
+  // Debug: Watch showScanner changes
+  $: console.log('MenuGrid reactive: showScanner =', showScanner);
+  
   const menuItems = [
     {
       id: 1,
