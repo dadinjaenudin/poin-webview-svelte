@@ -32,11 +32,17 @@
   }
   
   function handleScanError(errorMessage) {
-    // Log ALL errors to console for debugging
-    console.warn('Scanner error (scan attempt):', errorMessage);
+    // Filter out normal "no code found" errors (they're just noise)
+    if (errorMessage.includes('NotFoundException') || errorMessage.includes('No MultiFormat Readers')) {
+      // This is normal - scanner is working, just no code detected yet
+      return;
+    }
+    
+    // Log other errors for debugging
+    console.warn('Scanner error:', errorMessage);
     
     // Only show critical errors to user
-    if (errorMessage.includes('Camera') || errorMessage.includes('Permission') || errorMessage.includes('NotAllowed') || errorMessage.includes('NotFound')) {
+    if (errorMessage.includes('Camera') || errorMessage.includes('Permission') || errorMessage.includes('NotAllowed') || errorMessage.includes('NotFound') || errorMessage.includes('NotReadable')) {
       scanError = errorMessage;
       console.error('CRITICAL Scanner error:', errorMessage);
     }
