@@ -1,0 +1,77 @@
+╔══════════════════════════════════════════════════════════════╗
+║           🔍 DEBUG CAMERA - VERBOSE LOGGING                  ║
+╚══════════════════════════════════════════════════════════════╝
+
+📊 CURRENT STATUS:
+   ✅ Scanner modal opens
+   ✅ Scanner rendered successfully (log confirmed)
+   ❌ Camera not activating (no video preview)
+
+🔧 NEW DEBUG FEATURES ADDED:
+   • Verbose mode enabled (html5-qrcode will log more)
+   • All scan errors logged to console (not filtered)
+   • Video element check after 1 second
+   • Video dimensions and readyState logging
+   • Enhanced error stack trace
+
+🧪 PLEASE TEST WITH NEW LOGGING:
+
+1. URL: https://5174-ihgvy8prmtiz9nb3otr5u-583b4d74.sandbox.novita.ai
+
+2. STEPS:
+   a. Open URL
+   b. Hard refresh (Ctrl+Shift+R)
+   c. Open DevTools Console (F12)
+   d. Clear console (optional, for clean view)
+   e. Click "Scan Member" button
+   f. Wait 2 seconds
+   g. Copy ALL console logs
+
+3. EXPECTED NEW LOGS:
+   ```
+   Scanner rendered successfully!
+   Video element in DOM: true/false        ← NEW!
+   Video dimensions: 640 x 480             ← NEW!
+   Video readyState: 4                     ← NEW!
+   Scanner dashboard exists: true/false    ← NEW!
+   ```
+
+   Plus any html5-qrcode verbose logs (from library)
+
+4. CAMERA PERMISSION:
+   - Browser WILL ask for camera permission
+   - Click "Allow" when prompted
+   - Check if prompt even appears
+
+📋 SHARE WITH ME:
+   ✅ Full console logs (all lines)
+   ✅ Did camera permission dialog appear? (Yes/No)
+   ✅ If yes, did you click Allow? (Yes/No)
+   ✅ Browser name & version (Chrome 120? Firefox 121?)
+   ✅ Device (Desktop/Laptop/Mobile?)
+   ✅ OS (Windows 11? Mac? Linux?)
+
+🔍 WHAT WE'RE CHECKING:
+   • Is video element being created in DOM?
+   • What's the video readyState? (0-4)
+     - 0: HAVE_NOTHING
+     - 1: HAVE_METADATA
+     - 2: HAVE_CURRENT_DATA
+     - 3: HAVE_FUTURE_DATA
+     - 4: HAVE_ENOUGH_DATA (ready to play)
+   • Are there any hidden errors from html5-qrcode?
+   • Does scanner dashboard render properly?
+
+💡 POSSIBLE CAUSES WE'RE INVESTIGATING:
+   1. Camera permission not granted
+   2. No camera device available
+   3. Camera already in use by another app
+   4. Browser security policy blocking
+   5. html5-qrcode library issue
+   6. CSS hiding video element
+
+🚀 AFTER YOU SHARE LOGS:
+   I will identify exact issue and apply targeted fix
+
+⏰ Updated: 2025-12-13 10:07
+📄 Commit: ad62867
