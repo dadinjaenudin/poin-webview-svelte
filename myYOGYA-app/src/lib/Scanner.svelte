@@ -210,11 +210,33 @@
     console.log('Scanner: isOpen changed to false, cleaning up...');
     // Remove body scroll lock when closing
     document.body.classList.remove('modal-open');
-    // Clear scanner
+    
+    // Properly cleanup scanner: stop first, then clear
     if (scanner) {
-      scanner.clear().catch(err => console.error('Error clearing scanner:', err));
-      scanner = null;
+      if (isScanning) {
+        console.log('Scanner: Stopping camera before cleanup...');
+        scanner.stop()
+          .then(() => {
+            console.log('Scanner: Camera stopped, now clearing...');
+            return scanner.clear();
+          })
+          .then(() => {
+            console.log('Scanner: Cleared successfully');
+            scanner = null;
+          })
+          .catch(err => {
+            console.error('Error during scanner cleanup:', err);
+            // Force clear even if stop fails
+            scanner.clear().catch(() => {});
+            scanner = null;
+          });
+      } else {
+        // If not scanning, just clear
+        scanner.clear().catch(err => console.error('Error clearing scanner:', err));
+        scanner = null;
+      }
     }
+    
     isScanning = false;
     initCalled = false;
     scanResult = '';
@@ -234,8 +256,16 @@
     // Cleanup on component destruction
     document.body.classList.remove('modal-open');
     
+    // Properly cleanup: stop scanner before clearing
     if (scanner) {
-      scanner.clear().catch(err => console.error('Error on destroy:', err));
+      if (isScanning) {
+        console.log('Scanner: Stopping on destroy...');
+        scanner.stop()
+          .then(() => scanner.clear())
+          .catch(err => console.error('Error on destroy:', err));
+      } else {
+        scanner.clear().catch(err => console.error('Error on destroy:', err));
+      }
     }
   });
 </script>
