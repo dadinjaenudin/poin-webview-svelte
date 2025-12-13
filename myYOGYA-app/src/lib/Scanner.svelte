@@ -100,7 +100,17 @@
     handleClose();
   }
   
+  // Mount lifecycle - ensure init on component mount
+  onMount(() => {
+    console.log('Scanner onMount - isOpen:', isOpen);
+    if (isOpen && !scanner) {
+      console.log('Scanner: Init from onMount');
+      setTimeout(initScanner, 100);
+    }
+  });
+  
   onDestroy(() => {
+    console.log('Scanner onDestroy');
     if (scanner) {
       scanner.clear().catch(err => console.error('Error on destroy:', err));
     }

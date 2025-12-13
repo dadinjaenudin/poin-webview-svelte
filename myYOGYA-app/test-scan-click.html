@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Scan Button</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    iframe {
+      width: 100%;
+      height: 600px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+    }
+    .instruction {
+      background: #f0f0f0;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    .instruction h3 {
+      margin-top: 0;
+    }
+    .instruction ol {
+      margin-bottom: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="instruction">
+    <h3>🧪 Test Scanner Button</h3>
+    <ol>
+      <li>Wait for app to load in iframe below</li>
+      <li>Open DevTools Console (F12)</li>
+      <li>Click "Scan Member" button (orange icon, middle)</li>
+      <li>Check console logs for:
+        <ul>
+          <li>✅ "Scanner onMount - isOpen: true"</li>
+          <li>✅ "Scanner: Init from onMount"</li>
+          <li>✅ "Scanner reactive: isOpen = true"</li>
+        </ul>
+      </li>
+    </ol>
+  </div>
+  
+  <iframe src="https://5174-ihgvy8prmtiz9nb3otr5u-583b4d74.sandbox.novita.ai" 
+          title="MyYOGYA App Test"></iframe>
+  
+  <script>
+    console.log('🧪 Test Page Loaded');
+    console.log('📱 App URL: https://5174-ihgvy8prmtiz9nb3otr5u-583b4d74.sandbox.novita.ai');
+    console.log('🔍 Monitor console for Scanner logs when clicking "Scan Member"');
+  </script>
+</body>
+</html>
