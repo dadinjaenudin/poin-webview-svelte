@@ -32,10 +32,13 @@
   }
   
   function handleScanError(errorMessage) {
-    // Don't show every scan error, only critical ones
-    if (errorMessage.includes('Camera') || errorMessage.includes('Permission')) {
+    // Log ALL errors to console for debugging
+    console.warn('Scanner error (scan attempt):', errorMessage);
+    
+    // Only show critical errors to user
+    if (errorMessage.includes('Camera') || errorMessage.includes('Permission') || errorMessage.includes('NotAllowed') || errorMessage.includes('NotFound')) {
       scanError = errorMessage;
-      console.error('Scanner error:', errorMessage);
+      console.error('CRITICAL Scanner error:', errorMessage);
     }
   }
   
@@ -64,11 +67,12 @@
     initCalled = true;
     isScanning = true;
     
-    // Scanner configuration
+    // Scanner configuration with verbose logging
     const config = {
       fps: 10, // Frames per second
       qrbox: { width: 250, height: 250 }, // Scanning box size
       aspectRatio: 1.0,
+      verbose: true, // Enable verbose logging
       formatsToSupport: [
         'QR_CODE',
         'EAN_13',
@@ -84,13 +88,28 @@
     };
     
     try {
-      console.log('Creating Html5QrcodeScanner instance...');
+      console.log('Creating Html5QrcodeScanner instance with config:', config);
       scanner = new Html5QrcodeScanner('qr-reader', config, false);
+      console.log('Scanner instance created:', scanner);
       console.log('Rendering scanner...');
       scanner.render(handleScanSuccess, handleScanError);
       console.log('Scanner rendered successfully!');
+      
+      // Check if video element was created
+      setTimeout(() => {
+        const videoElement = document.querySelector('#qr-reader video');
+        console.log('Video element in DOM:', !!videoElement);
+        if (videoElement) {
+          console.log('Video dimensions:', videoElement.videoWidth, 'x', videoElement.videoHeight);
+          console.log('Video readyState:', videoElement.readyState);
+        }
+        
+        const readerState = document.querySelector('#qr-reader__dashboard_section');
+        console.log('Scanner dashboard exists:', !!readerState);
+      }, 1000);
     } catch (err) {
       console.error('Error initializing scanner:', err);
+      console.error('Error stack:', err.stack);
       scanError = 'Failed to initialize scanner: ' + err.message;
       isScanning = false;
       initCalled = false;
