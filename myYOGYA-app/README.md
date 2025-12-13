@@ -19,6 +19,7 @@ Landing page mobile version untuk aplikasi MyYOGYA yang dibangun dengan Svelte.
 - **Insights Carousel** - Banner promosi dengan slider otomatis
 - **Promo Nasional Mingguan** - Grid 2 kolom dengan promo cards (Pasti Hemat, Buminten)
 - **Videos Section** - Grid video thumbnails dengan play icon dan caption
+- **QR Code & Barcode Scanner** - Scanner kamera untuk scan member cards dan barcodes
 - **Bottom Navigation** - Navigasi bawah dengan 4 tab (Beranda, Voucher, Loyalty, Akun)
 
 ## 🚀 Teknologi
@@ -70,6 +71,7 @@ myYOGYA-app/
 │   │   ├── Insights.svelte        # Komponen insights carousel
 │   │   ├── PromoWeekly.svelte     # Komponen promo mingguan
 │   │   ├── Videos.svelte          # Komponen videos section
+│   │   ├── Scanner.svelte         # Komponen QR/Barcode scanner
 │   │   └── BottomNav.svelte       # Komponen bottom navigation
 │   ├── App.svelte                 # Main app component
 │   ├── main.js                    # Entry point
