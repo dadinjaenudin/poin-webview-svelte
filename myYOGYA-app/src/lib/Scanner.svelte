@@ -1,6 +1,6 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
-  import { Html5QrcodeScanner } from 'html5-qrcode';
+  import { Html5Qrcode } from 'html5-qrcode';
   
   export let isOpen = false;
   export let onScanSuccess = null;
@@ -42,7 +42,7 @@
     }
   }
   
-  function initScanner() {
+  async function initScanner() {
     console.log('initScanner called - scanner:', !!scanner, 'initCalled:', initCalled, 'isOpen:', isOpen);
     
     // Prevent double initialization
@@ -63,57 +63,79 @@
       return;
     }
     
-    console.log('Starting scanner initialization...');
+    console.log('Starting scanner initialization with Html5Qrcode API...');
     initCalled = true;
     isScanning = true;
     
-    // Scanner configuration with verbose logging
-    const config = {
-      fps: 10, // Frames per second
-      qrbox: { width: 250, height: 250 }, // Scanning box size
-      aspectRatio: 1.0,
-      verbose: true, // Enable verbose logging
-      formatsToSupport: [
-        'QR_CODE',
-        'EAN_13',
-        'EAN_8',
-        'UPC_A',
-        'UPC_E',
-        'CODE_39',
-        'CODE_93',
-        'CODE_128',
-        'ITF',
-        'CODABAR'
-      ]
-    };
-    
     try {
-      console.log('Creating Html5QrcodeScanner instance with config:', config);
-      scanner = new Html5QrcodeScanner('qr-reader', config, false);
+      console.log('Creating Html5Qrcode instance...');
+      scanner = new Html5Qrcode('qr-reader');
       console.log('Scanner instance created:', scanner);
-      console.log('Rendering scanner...');
-      scanner.render(handleScanSuccess, handleScanError);
-      console.log('Scanner rendered successfully!');
       
-      // Check if video element was created
+      // Configuration for camera
+      const config = {
+        fps: 10,
+        qrbox: { width: 250, height: 250 },
+        formatsToSupport: [
+          0,  // QR_CODE
+          13, // EAN_13
+          8,  // EAN_8
+          12, // UPC_A
+          14, // UPC_E
+          11, // CODE_39
+          15, // CODE_93
+          16, // CODE_128
+          10, // ITF
+          9   // CODABAR
+        ]
+      };
+      
+      console.log('Starting camera with config:', config);
+      
+      // Start scanning with rear camera (facingMode: environment)
+      await scanner.start(
+        { facingMode: "environment" }, // Use rear camera
+        config,
+        handleScanSuccess,
+        handleScanError
+      );
+      
+      console.log('Camera started successfully!');
+      
+      // Check video element after camera starts
       setTimeout(() => {
         const videoElement = document.querySelector('#qr-reader video');
         console.log('Video element in DOM:', !!videoElement);
         if (videoElement) {
           console.log('Video dimensions:', videoElement.videoWidth, 'x', videoElement.videoHeight);
           console.log('Video readyState:', videoElement.readyState);
+          console.log('Video paused:', videoElement.paused);
         }
-        
-        const readerState = document.querySelector('#qr-reader__dashboard_section');
-        console.log('Scanner dashboard exists:', !!readerState);
-      }, 1000);
+      }, 500);
+      
     } catch (err) {
-      console.error('Error initializing scanner:', err);
-      console.error('Error stack:', err.stack);
-      scanError = 'Failed to initialize scanner: ' + err.message;
+      console.error('Error starting camera:', err);
+      console.error('Error name:', err.name);
+      console.error('Error message:', err.message);
+      
+      // User-friendly error messages
+      if (err.name === 'NotAllowedError') {
+        scanError = 'Camera permission denied. Please allow camera access.';
+      } else if (err.name === 'NotFoundError') {
+        scanError = 'No camera found on this device.';
+      } else if (err.name === 'NotReadableError') {
+        scanError = 'Camera is already in use by another application.';
+      } else {
+        scanError = 'Failed to start camera: ' + err.message;
+      }
+      
       isScanning = false;
       initCalled = false;
-      scanner = null;
+      
+      if (scanner) {
+        scanner.clear().catch(() => {});
+        scanner = null;
+      }
     }
   }
   
@@ -293,14 +315,23 @@
     border: 2px solid #e0e0e0;
     border-radius: 12px;
     overflow: hidden;
+    min-height: 300px;
+    background: #000;
   }
   
   :global(#qr-reader video) {
+    width: 100% !important;
+    max-width: 100% !important;
     border-radius: 12px;
+    display: block !important;
   }
   
   :global(#qr-reader__dashboard) {
     display: none !important;
+  }
+  
+  :global(#qr-reader__scan_region) {
+    position: relative !important;
   }
   
   :global(#qr-reader__dashboard_section_csr button) {
