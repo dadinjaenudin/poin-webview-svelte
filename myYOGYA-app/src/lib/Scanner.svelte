@@ -173,7 +173,9 @@
   }
   
   function handleClose() {
-    console.log('handleClose called - scanner:', !!scanner);
+    console.log('Scanner: handleClose called - scanner:', !!scanner);
+    console.log('Scanner: onClose callback exists:', !!onClose);
+    
     if (scanner) {
       scanner.clear().catch(err => console.error('Error clearing scanner:', err));
       scanner = null;
@@ -184,8 +186,12 @@
     scanResult = '';
     scanError = '';
     
+    console.log('Scanner: About to call onClose callback');
     if (onClose) {
       onClose();
+      console.log('Scanner: onClose callback executed');
+    } else {
+      console.warn('Scanner: onClose callback is not defined!');
     }
   }
   

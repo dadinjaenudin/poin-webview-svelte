@@ -104,7 +104,10 @@
   }
   
   function handleScannerClose() {
+    console.log('MenuGrid: handleScannerClose called');
+    console.log('MenuGrid: showScanner before:', showScanner);
     showScanner = false;
+    console.log('MenuGrid: showScanner after:', showScanner);
   }
 </script>
 
