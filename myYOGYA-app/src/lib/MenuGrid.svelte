@@ -1,4 +1,9 @@
 <script>
+  import Scanner from './Scanner.svelte';
+  
+  let showScanner = false;
+  let lastScanResult = null;
+  
   const menuItems = [
     {
       id: 1,
@@ -66,7 +71,28 @@
   ];
 
   function handleMenuClick(item) {
+    // Open scanner if "Scan Member" clicked
+    if (item.icon === 'scan') {
+      showScanner = true;
+      return;
+    }
+    
     alert(`Clicked: ${item.title} ${item.subtitle}`);
+  }
+  
+  function handleScanSuccess(decodedText, decodedResult) {
+    console.log('Scan success:', decodedText);
+    lastScanResult = decodedText;
+    
+    // You can add your logic here, e.g.:
+    // - Send to API
+    // - Show member info
+    // - Update points
+    alert(`Member Code Scanned:\n${decodedText}`);
+  }
+  
+  function handleScannerClose() {
+    showScanner = false;
   }
 </script>
 
@@ -123,6 +149,13 @@
     {/each}
   </div>
 </div>
+
+<!-- Scanner Component -->
+<Scanner 
+  isOpen={showScanner}
+  onScanSuccess={handleScanSuccess}
+  onClose={handleScannerClose}
+/>
 
 <style>
   .menu-container {
