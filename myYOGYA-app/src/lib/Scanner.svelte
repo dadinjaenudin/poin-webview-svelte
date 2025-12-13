@@ -20,15 +20,41 @@
     scanResult = decodedText;
     scanError = '';
     
+    // Stop camera after successful scan
+    if (scanner) {
+      scanner.stop().then(() => {
+        console.log('Camera stopped after successful scan');
+        isScanning = false;
+      }).catch(err => {
+        console.error('Error stopping camera:', err);
+      });
+    }
+    
     // Callback to parent
     if (onScanSuccess) {
       onScanSuccess(decodedText, decodedResult);
     }
     
-    // Show result for 2 seconds then close
+    // Don't auto-close - let user choose to scan again or close
+  }
+  
+  function handleScanAgain() {
+    console.log('Scan again requested');
+    // Reset scan result
+    scanResult = '';
+    scanError = '';
+    
+    // Restart camera
+    if (scanner) {
+      scanner.clear().catch(() => {});
+      scanner = null;
+    }
+    initCalled = false;
+    
+    // Re-initialize scanner
     setTimeout(() => {
-      handleClose();
-    }, 2000);
+      initScanner();
+    }, 100);
   }
   
   function handleScanError(errorMessage) {
@@ -217,6 +243,21 @@
             </svg>
             <h3>Scan Berhasil!</h3>
             <p class="result-text">{scanResult}</p>
+            
+            <div class="action-buttons">
+              <button class="btn-secondary" on:click={handleScanAgain}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z" fill="currentColor"/>
+                </svg>
+                Scan Lagi
+              </button>
+              <button class="btn-primary" on:click={handleClose}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" fill="currentColor"/>
+                </svg>
+                Kembali ke Menu
+              </button>
+            </div>
           </div>
         {/if}
         
@@ -231,10 +272,12 @@
           </div>
         {/if}
         
-        <div class="scanner-instructions">
-          <p>📱 Arahkan kamera ke QR Code atau Barcode</p>
-          <p>📦 Support: QR Code, EAN, UPC, Code 128, dll</p>
-        </div>
+        {#if !scanResult}
+          <div class="scanner-instructions">
+            <p>📱 Arahkan kamera ke QR Code atau Barcode</p>
+            <p>📦 Support: QR Code, EAN, UPC, Code 128, dll</p>
+          </div>
+        {/if}
       </div>
     </div>
   </div>
@@ -399,6 +442,59 @@
     margin: 8px 0 0 0;
     font-size: 14px;
     color: #f44336;
+  }
+  
+  .action-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+    justify-content: center;
+  }
+  
+  .action-buttons button {
+    flex: 1;
+    padding: 14px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+  
+  .btn-primary {
+    background: linear-gradient(135deg, #d32f2f 0%, #ff6b35 100%);
+    color: white;
+  }
+  
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3);
+  }
+  
+  .btn-primary:active {
+    transform: translateY(0);
+  }
+  
+  .btn-secondary {
+    background: white;
+    color: #d32f2f;
+    border: 2px solid #d32f2f;
+  }
+  
+  .btn-secondary:hover {
+    background: #fef5f5;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(211, 47, 47, 0.2);
+  }
+  
+  .btn-secondary:active {
+    transform: translateY(0);
   }
   
   .scanner-instructions {
