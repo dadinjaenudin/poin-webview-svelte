@@ -176,10 +176,10 @@ myYOGYA-app/
 
 ## 🌐 Deployment
 
-**Live URL**: https://5174-ihgvy8prmtiz9nb3otr5u-583b4d74.sandbox.novita.ai
+**Live URL**: https://5176-ihgvy8prmtiz9nb3otr5u-583b4d74.sandbox.novita.ai
 
 **Server**: Vite Dev Server with --host flag
-**Port**: 5174
+**Port**: 5176
 **Status**: ✅ Running
 
 ## 📈 Metrics

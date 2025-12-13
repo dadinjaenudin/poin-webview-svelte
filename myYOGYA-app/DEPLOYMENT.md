@@ -2,7 +2,7 @@
 
 ## 🌐 Live URL
 
-**Public URL**: https://5174-ihgvy8prmtiz9nb3otr5u-583b4d74.sandbox.novita.ai
+**Public URL**: https://5176-ihgvy8prmtiz9nb3otr5u-583b4d74.sandbox.novita.ai
 
 ## 🚀 Quick Start
 
@@ -19,13 +19,13 @@ npm run dev -- --host
 ```
 
 Server akan berjalan di:
-- **Local**: http://localhost:5174
-- **Network**: http://169.254.0.21:5174
+- **Local**: http://localhost:5176
+- **Network**: http://169.254.0.21:5176
 
 ## 📱 Testing on Mobile
 
 Untuk testing di mobile device:
-1. Buka URL public di browser mobile: https://5174-ihgvy8prmtiz9nb3otr5u-583b4d74.sandbox.novita.ai
+1. Buka URL public di browser mobile: https://5176-ihgvy8prmtiz9nb3otr5u-583b4d74.sandbox.novita.ai
 2. Atau scan QR code (bisa generate dari URL)
 3. Atau gunakan Chrome DevTools Device Mode untuk simulasi mobile
 
