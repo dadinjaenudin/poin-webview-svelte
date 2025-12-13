@@ -174,7 +174,7 @@
   
   function handleClose() {
     console.log('Scanner: handleClose called - scanner:', !!scanner);
-    console.log('Scanner: onClose callback exists:', !!onClose);
+    console.log('Scanner: isOpen before:', isOpen);
     
     if (scanner) {
       scanner.clear().catch(err => console.error('Error clearing scanner:', err));
@@ -186,12 +186,15 @@
     scanResult = '';
     scanError = '';
     
+    // Set isOpen to false (this will trigger parent to hide scanner via binding)
+    isOpen = false;
+    console.log('Scanner: isOpen after:', isOpen);
+    
+    // Also call the callback if provided
     console.log('Scanner: About to call onClose callback');
     if (onClose) {
       onClose();
       console.log('Scanner: onClose callback executed');
-    } else {
-      console.warn('Scanner: onClose callback is not defined!');
     }
   }
   

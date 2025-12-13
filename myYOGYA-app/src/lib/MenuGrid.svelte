@@ -166,13 +166,11 @@
 </div>
 
 <!-- Scanner Component -->
-{#if showScanner}
-  <Scanner 
-    isOpen={true}
-    onScanSuccess={handleScanSuccess}
-    onClose={handleScannerClose}
-  />
-{/if}
+<Scanner 
+  bind:isOpen={showScanner}
+  onScanSuccess={handleScanSuccess}
+  onClose={handleScannerClose}
+/>
 
 <style>
   .menu-container {
