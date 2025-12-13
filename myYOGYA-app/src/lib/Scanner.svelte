@@ -35,14 +35,28 @@
       onScanSuccess(decodedText, decodedResult);
     }
     
-    // Auto-close after 2 seconds to return to main menu
-    setTimeout(() => {
-      console.log('Auto-closing scanner after successful scan');
-      handleClose();
-    }, 2000);
+    // Don't auto-close - let user decide to scan again or go back to menu
   }
   
-
+  function handleScanAgain() {
+    console.log('Scan Again clicked');
+    // Clear previous result
+    scanResult = '';
+    scanError = '';
+    
+    // Restart scanner
+    if (scanner) {
+      scanner.start({ facingMode: "environment" }, config)
+        .then(() => {
+          console.log('Camera restarted for new scan');
+          isScanning = true;
+        })
+        .catch(err => {
+          console.error('Error restarting camera:', err);
+          scanError = 'Gagal memulai kamera: ' + err.message;
+        });
+    }
+  }
   
   function handleScanError(errorMessage) {
     // Filter out normal "no code found" errors (they're just noise)
@@ -237,7 +251,17 @@
             </svg>
             <h3>Scan Berhasil!</h3>
             <p class="result-text">{scanResult}</p>
-            <p class="auto-close-message">Kembali ke menu otomatis...</p>
+            
+            <div class="action-buttons">
+              <button class="btn-secondary" on:click={handleScanAgain}>
+                <span class="btn-icon">⟲</span>
+                Scan Lagi
+              </button>
+              <button class="btn-primary" on:click={handleClose}>
+                <span class="btn-icon">🏠</span>
+                Kembali ke Menu
+              </button>
+            </div>
           </div>
         {/if}
         
@@ -430,6 +454,56 @@
     margin: 8px 0 0 0;
     font-size: 14px;
     color: #f44336;
+  }
+  
+  .action-buttons {
+    margin-top: 24px;
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+  }
+  
+  .btn-primary,
+  .btn-secondary {
+    flex: 1;
+    padding: 14px 20px;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .btn-primary {
+    background: linear-gradient(135deg, #d32f2f 0%, #ff6b35 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3);
+  }
+  
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(211, 47, 47, 0.4);
+  }
+  
+  .btn-secondary {
+    background: white;
+    color: #d32f2f;
+    border: 2px solid #d32f2f;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  .btn-icon {
+    font-size: 18px;
   }
   
   .auto-close-message {
