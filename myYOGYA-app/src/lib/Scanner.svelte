@@ -10,6 +10,7 @@
   let scanResult = '';
   let scanError = '';
   let isScanning = false;
+  let initCalled = false; // Track if init already called
   
   // Debug: Watch isOpen changes with explicit dependency
   $: isOpen, console.log('Scanner isOpen changed:', isOpen);
@@ -39,8 +40,28 @@
   }
   
   function initScanner() {
-    if (!isOpen || scanner) return;
+    console.log('initScanner called - scanner:', !!scanner, 'initCalled:', initCalled, 'isOpen:', isOpen);
     
+    // Prevent double initialization
+    if (scanner || initCalled) {
+      console.log('Scanner already initialized or init in progress, skipping...');
+      return;
+    }
+    
+    if (!isOpen) {
+      console.log('Scanner not open, skipping init...');
+      return;
+    }
+    
+    // Check if DOM element exists
+    const element = document.getElementById('qr-reader');
+    if (!element) {
+      console.error('qr-reader element not found in DOM');
+      return;
+    }
+    
+    console.log('Starting scanner initialization...');
+    initCalled = true;
     isScanning = true;
     
     // Scanner configuration
@@ -63,22 +84,29 @@
     };
     
     try {
+      console.log('Creating Html5QrcodeScanner instance...');
       scanner = new Html5QrcodeScanner('qr-reader', config, false);
+      console.log('Rendering scanner...');
       scanner.render(handleScanSuccess, handleScanError);
+      console.log('Scanner rendered successfully!');
     } catch (err) {
       console.error('Error initializing scanner:', err);
-      scanError = 'Failed to initialize scanner';
+      scanError = 'Failed to initialize scanner: ' + err.message;
       isScanning = false;
+      initCalled = false;
+      scanner = null;
     }
   }
   
   function handleClose() {
+    console.log('handleClose called - scanner:', !!scanner);
     if (scanner) {
       scanner.clear().catch(err => console.error('Error clearing scanner:', err));
       scanner = null;
     }
     
     isScanning = false;
+    initCalled = false; // Reset init flag
     scanResult = '';
     scanError = '';
     
@@ -88,25 +116,27 @@
   }
   
   // Watch for isOpen changes - explicit reactive statements
-  $: console.log('Scanner reactive: isOpen =', isOpen, 'scanner =', !!scanner);
-  
-  $: if (isOpen && !scanner) {
-    console.log('Scanner: Initializing...');
-    setTimeout(initScanner, 100);
-  }
+  $: console.log('Scanner reactive: isOpen =', isOpen, 'scanner =', !!scanner, 'initCalled =', initCalled);
   
   $: if (!isOpen && scanner) {
     console.log('Scanner: Closing...');
     handleClose();
   }
   
-  // Mount lifecycle - ensure init on component mount
+  // Mount lifecycle - init scanner when component mounts
   onMount(() => {
-    console.log('Scanner onMount - isOpen:', isOpen);
-    if (isOpen && !scanner) {
-      console.log('Scanner: Init from onMount');
-      setTimeout(initScanner, 100);
-    }
+    console.log('Scanner onMount - isOpen:', isOpen, 'DOM ready');
+    
+    // Wait for DOM to be fully ready
+    setTimeout(() => {
+      const element = document.getElementById('qr-reader');
+      console.log('qr-reader element exists:', !!element);
+      
+      if (isOpen && !initCalled) {
+        console.log('Scanner: Init from onMount with delay');
+        initScanner();
+      }
+    }, 200); // Increased delay to ensure DOM is ready
   });
   
   onDestroy(() => {
