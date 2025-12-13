@@ -200,6 +200,9 @@
   onMount(() => {
     console.log('Scanner onMount - isOpen:', isOpen, 'DOM ready');
     
+    // Prevent body scroll when modal opens
+    document.body.classList.add('modal-open');
+    
     // Wait for DOM to be fully ready
     setTimeout(() => {
       const element = document.getElementById('qr-reader');
@@ -214,6 +217,10 @@
   
   onDestroy(() => {
     console.log('Scanner onDestroy');
+    
+    // Re-enable body scroll when modal closes
+    document.body.classList.remove('modal-open');
+    
     if (scanner) {
       scanner.clear().catch(err => console.error('Error on destroy:', err));
     }
@@ -296,6 +303,14 @@
     align-items: center;
     justify-content: center;
     animation: fadeIn 0.3s ease;
+    overflow: hidden; /* Prevent scrolling */
+  }
+  
+  /* Prevent body scroll when modal is open */
+  :global(body.modal-open) {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
   }
   
   @keyframes fadeIn {
