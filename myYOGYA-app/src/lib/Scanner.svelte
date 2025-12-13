@@ -35,27 +35,14 @@
       onScanSuccess(decodedText, decodedResult);
     }
     
-    // Don't auto-close - let user choose to scan again or close
+    // Auto-close after 2 seconds to return to main menu
+    setTimeout(() => {
+      console.log('Auto-closing scanner after successful scan');
+      handleClose();
+    }, 2000);
   }
   
-  function handleScanAgain() {
-    console.log('Scan again requested');
-    // Reset scan result
-    scanResult = '';
-    scanError = '';
-    
-    // Restart camera
-    if (scanner) {
-      scanner.clear().catch(() => {});
-      scanner = null;
-    }
-    initCalled = false;
-    
-    // Re-initialize scanner
-    setTimeout(() => {
-      initScanner();
-    }, 100);
-  }
+
   
   function handleScanError(errorMessage) {
     // Filter out normal "no code found" errors (they're just noise)
@@ -250,21 +237,7 @@
             </svg>
             <h3>Scan Berhasil!</h3>
             <p class="result-text">{scanResult}</p>
-            
-            <div class="action-buttons">
-              <button class="btn-secondary" on:click={handleScanAgain}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                  <path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z" fill="currentColor"/>
-                </svg>
-                Scan Lagi
-              </button>
-              <button class="btn-primary" on:click={handleClose}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                  <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" fill="currentColor"/>
-                </svg>
-                Kembali ke Menu
-              </button>
-            </div>
+            <p class="auto-close-message">Kembali ke menu otomatis...</p>
           </div>
         {/if}
         
@@ -459,57 +432,21 @@
     color: #f44336;
   }
   
-  .action-buttons {
-    display: flex;
-    gap: 12px;
-    margin-top: 24px;
-    justify-content: center;
+  .auto-close-message {
+    margin: 16px 0 0 0;
+    font-size: 14px;
+    color: #666;
+    font-style: italic;
+    animation: pulse 1.5s ease-in-out infinite;
   }
   
-  .action-buttons button {
-    flex: 1;
-    padding: 14px 20px;
-    border: none;
-    border-radius: 8px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  }
-  
-  .btn-primary {
-    background: linear-gradient(135deg, #d32f2f 0%, #ff6b35 100%);
-    color: white;
-  }
-  
-  .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3);
-  }
-  
-  .btn-primary:active {
-    transform: translateY(0);
-  }
-  
-  .btn-secondary {
-    background: white;
-    color: #d32f2f;
-    border: 2px solid #d32f2f;
-  }
-  
-  .btn-secondary:hover {
-    background: #fef5f5;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(211, 47, 47, 0.2);
-  }
-  
-  .btn-secondary:active {
-    transform: translateY(0);
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
   }
   
   .scanner-instructions {
