@@ -11,10 +11,8 @@
   let scanError = '';
   let isScanning = false;
   
-  // Debug: Watch isOpen changes
-  $: {
-    console.log('Scanner isOpen changed:', isOpen);
-  }
+  // Debug: Watch isOpen changes with explicit dependency
+  $: isOpen, console.log('Scanner isOpen changed:', isOpen);
   
   function handleScanSuccess(decodedText, decodedResult) {
     console.log(`Scan result: ${decodedText}`, decodedResult);
@@ -89,16 +87,17 @@
     }
   }
   
-  // Watch for isOpen changes
-  $: {
-    console.log('Scanner reactive: isOpen =', isOpen, 'scanner =', !!scanner);
-    if (isOpen && !scanner) {
-      console.log('Scanner: Initializing...');
-      setTimeout(initScanner, 100);
-    } else if (!isOpen && scanner) {
-      console.log('Scanner: Closing...');
-      handleClose();
-    }
+  // Watch for isOpen changes - explicit reactive statements
+  $: console.log('Scanner reactive: isOpen =', isOpen, 'scanner =', !!scanner);
+  
+  $: if (isOpen && !scanner) {
+    console.log('Scanner: Initializing...');
+    setTimeout(initScanner, 100);
+  }
+  
+  $: if (!isOpen && scanner) {
+    console.log('Scanner: Closing...');
+    handleClose();
   }
   
   onDestroy(() => {
