@@ -23,6 +23,8 @@
      • Booking Lapangan
      • Riwayat Transaksi
   ✅ Insights Carousel (Promotional Banners)
+  ✅ Promo Nasional Mingguan (2 promo cards)
+  ✅ Videos Section (Video thumbnails with play icons)
   ✅ Bottom Navigation (4 tabs)
 
 🎨 DESIGN:
@@ -39,8 +41,8 @@
   • SVG Icons
 
 📊 PROJECT INFO:
-  • Total Components: 5
-  • Lines of Code: ~2,270
+  • Total Components: 7
+  • Lines of Code: ~3,500
   • Build Time: < 1 second
   • Status: ✅ Running
 

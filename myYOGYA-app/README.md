@@ -17,6 +17,8 @@ Landing page mobile version untuk aplikasi MyYOGYA yang dibangun dengan Svelte.
   - Booking Lapangan
   - Riwayat Transaksi
 - **Insights Carousel** - Banner promosi dengan slider otomatis
+- **Promo Nasional Mingguan** - Grid 2 kolom dengan promo cards (Pasti Hemat, Buminten)
+- **Videos Section** - Grid video thumbnails dengan play icon dan caption
 - **Bottom Navigation** - Navigasi bawah dengan 4 tab (Beranda, Voucher, Loyalty, Akun)
 
 ## 🚀 Teknologi
@@ -66,6 +68,8 @@ myYOGYA-app/
 │   │   ├── UserGreeting.svelte    # Komponen greeting card
 │   │   ├── MenuGrid.svelte        # Komponen grid menu
 │   │   ├── Insights.svelte        # Komponen insights carousel
+│   │   ├── PromoWeekly.svelte     # Komponen promo mingguan
+│   │   ├── Videos.svelte          # Komponen videos section
 │   │   └── BottomNav.svelte       # Komponen bottom navigation
 │   ├── App.svelte                 # Main app component
 │   ├── main.js                    # Entry point
