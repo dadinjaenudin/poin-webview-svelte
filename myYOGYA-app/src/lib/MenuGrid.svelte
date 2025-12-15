@@ -4,12 +4,6 @@
   let showScanner = false;
   let lastScanResult = null;
   
-  // Debug: Watch showScanner changes
-  $: {
-    console.log('MenuGrid reactive: showScanner =', showScanner);
-    console.log('MenuGrid: This should update Scanner via bind:isOpen');
-  }
-  
   const menuItems = [
     {
       id: 1,
@@ -77,19 +71,9 @@
   ];
 
   function handleMenuClick(item) {
-    console.log('Menu clicked:', item.title, item.icon);
-    
     // Open scanner if "Scan Member" clicked
     if (item.icon === 'scan') {
-      console.log('Opening scanner...');
-      console.log('showScanner before:', showScanner);
       showScanner = true;
-      console.log('showScanner after:', showScanner);
-      
-      // Force reactivity update
-      setTimeout(() => {
-        console.log('showScanner in timeout:', showScanner);
-      }, 100);
       return;
     }
     
@@ -97,7 +81,6 @@
   }
   
   function handleScanSuccess(decodedText, decodedResult) {
-    console.log('Scan success:', decodedText);
     lastScanResult = decodedText;
     
     // You can add your logic here, e.g.:
@@ -110,10 +93,7 @@
   }
   
   function handleScannerClose() {
-    console.log('MenuGrid: handleScannerClose called');
-    console.log('MenuGrid: showScanner before:', showScanner);
     showScanner = false;
-    console.log('MenuGrid: showScanner after:', showScanner);
   }
 </script>
 

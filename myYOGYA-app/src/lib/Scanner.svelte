@@ -12,24 +12,18 @@
   let isScanning = false;
   let initCalled = false; // Track if init already called
   
-  // Debug: Watch isOpen changes with explicit dependency
-  $: {
-    console.log('Scanner isOpen changed:', isOpen);
-    console.log('Scanner component is receiving prop changes');
-  }
+
   
   function handleScanSuccess(decodedText, decodedResult) {
-    console.log(`Scan result: ${decodedText}`, decodedResult);
     scanResult = decodedText;
     scanError = '';
     
     // Stop camera after successful scan
     if (scanner) {
       scanner.stop().then(() => {
-        console.log('Camera stopped after successful scan');
         isScanning = false;
       }).catch(err => {
-        console.error('Error stopping camera:', err);
+        // Error stopping camera
       });
     }
     
@@ -42,7 +36,6 @@
   }
   
   function handleScanAgain() {
-    console.log('Scan Again clicked');
     // Clear previous result
     scanResult = '';
     scanError = '';
@@ -51,11 +44,9 @@
     if (scanner) {
       scanner.start({ facingMode: "environment" }, config)
         .then(() => {
-          console.log('Camera restarted for new scan');
           isScanning = true;
         })
         .catch(err => {
-          console.error('Error restarting camera:', err);
           scanError = 'Gagal memulai kamera: ' + err.message;
         });
     }
@@ -68,45 +59,33 @@
       return;
     }
     
-    // Log other errors for debugging
-    console.warn('Scanner error:', errorMessage);
-    
     // Only show critical errors to user
     if (errorMessage.includes('Camera') || errorMessage.includes('Permission') || errorMessage.includes('NotAllowed') || errorMessage.includes('NotFound') || errorMessage.includes('NotReadable')) {
       scanError = errorMessage;
-      console.error('CRITICAL Scanner error:', errorMessage);
     }
   }
   
   async function initScanner() {
-    console.log('initScanner called - scanner:', !!scanner, 'initCalled:', initCalled, 'isOpen:', isOpen);
-    
     // Prevent double initialization
     if (scanner || initCalled) {
-      console.log('Scanner already initialized or init in progress, skipping...');
       return;
     }
     
     if (!isOpen) {
-      console.log('Scanner not open, skipping init...');
       return;
     }
     
     // Check if DOM element exists
     const element = document.getElementById('qr-reader');
     if (!element) {
-      console.error('qr-reader element not found in DOM');
       return;
     }
     
-    console.log('Starting scanner initialization with Html5Qrcode API...');
     initCalled = true;
     isScanning = true;
     
     try {
-      console.log('Creating Html5Qrcode instance...');
       scanner = new Html5Qrcode('qr-reader');
-      console.log('Scanner instance created:', scanner);
       
       // Configuration for camera
       const config = {
@@ -126,8 +105,6 @@
         ]
       };
       
-      console.log('Starting camera with config:', config);
-      
       // Start scanning with rear camera (facingMode: environment)
       await scanner.start(
         { facingMode: "environment" }, // Use rear camera
@@ -136,24 +113,7 @@
         handleScanError
       );
       
-      console.log('Camera started successfully!');
-      
-      // Check video element after camera starts
-      setTimeout(() => {
-        const videoElement = document.querySelector('#qr-reader video');
-        console.log('Video element in DOM:', !!videoElement);
-        if (videoElement) {
-          console.log('Video dimensions:', videoElement.videoWidth, 'x', videoElement.videoHeight);
-          console.log('Video readyState:', videoElement.readyState);
-          console.log('Video paused:', videoElement.paused);
-        }
-      }, 500);
-      
     } catch (err) {
-      console.error('Error starting camera:', err);
-      console.error('Error name:', err.name);
-      console.error('Error message:', err.message);
-      
       // User-friendly error messages
       if (err.name === 'NotAllowedError') {
         scanError = 'Camera permission denied. Please allow camera access.';
@@ -176,27 +136,18 @@
   }
   
   function handleClose() {
-    console.log('Scanner: handleClose called - scanner:', !!scanner);
-    console.log('Scanner: isOpen before:', isOpen);
-    
     // Set isOpen to false
     // This will trigger the reactive statement to do cleanup
     isOpen = false;
-    console.log('Scanner: isOpen set to false');
     
     // Call the callback if provided
     if (onClose) {
       onClose();
-      console.log('Scanner: onClose callback executed');
     }
   }
   
-  // Watch for isOpen changes - explicit reactive statements
-  $: console.log('Scanner reactive: isOpen =', isOpen, 'scanner =', !!scanner, 'initCalled =', initCalled);
-  
   // When isOpen becomes true, initialize scanner
   $: if (isOpen && !scanner && !initCalled) {
-    console.log('Scanner: isOpen changed to true, initializing...');
     // Add body scroll lock when opening
     document.body.classList.add('modal-open');
     // Wait for DOM to be ready
@@ -207,32 +158,27 @@
   
   // When isOpen becomes false, cleanup
   $: if (!isOpen && scanner) {
-    console.log('Scanner: isOpen changed to false, cleaning up...');
     // Remove body scroll lock when closing
     document.body.classList.remove('modal-open');
     
     // Properly cleanup scanner: stop first, then clear
     if (scanner) {
       if (isScanning) {
-        console.log('Scanner: Stopping camera before cleanup...');
         scanner.stop()
           .then(() => {
-            console.log('Scanner: Camera stopped, now clearing...');
             return scanner.clear();
           })
           .then(() => {
-            console.log('Scanner: Cleared successfully');
             scanner = null;
           })
           .catch(err => {
-            console.error('Error during scanner cleanup:', err);
             // Force clear even if stop fails
             scanner.clear().catch(() => {});
             scanner = null;
           });
       } else {
         // If not scanning, just clear
-        scanner.clear().catch(err => console.error('Error clearing scanner:', err));
+        scanner.clear().catch(err => {});
         scanner = null;
       }
     }
@@ -245,26 +191,22 @@
   
   // Mount lifecycle - component is now always mounted
   onMount(() => {
-    console.log('Scanner onMount - Component mounted, isOpen:', isOpen);
     // Note: Scanner initialization is now handled by reactive statement
     // This ensures it works both on mount and when isOpen changes later
   });
   
   onDestroy(() => {
-    console.log('Scanner onDestroy - Component being destroyed');
-    
     // Cleanup on component destruction
     document.body.classList.remove('modal-open');
     
     // Properly cleanup: stop scanner before clearing
     if (scanner) {
       if (isScanning) {
-        console.log('Scanner: Stopping on destroy...');
         scanner.stop()
           .then(() => scanner.clear())
-          .catch(err => console.error('Error on destroy:', err));
+          .catch(err => {});
       } else {
-        scanner.clear().catch(err => console.error('Error on destroy:', err));
+        scanner.clear().catch(err => {});
       }
     }
   });
