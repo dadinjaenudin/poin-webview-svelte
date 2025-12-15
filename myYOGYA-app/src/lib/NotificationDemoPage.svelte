@@ -1,6 +1,7 @@
 <script>
   import { notificationStore } from '../stores/notification.js';
   import { navigateTo } from '../stores/navigation.js';
+  import { badgeStore } from '../stores/badge.js';
   
   function handleBack() {
     navigateTo('home');
@@ -40,6 +41,9 @@
   
   // Demo: Show new voucher notification
   function showNewVoucher() {
+    // Add badge
+    badgeStore.increment('voucher');
+    
     notificationStore.newVoucher(
       'Indomie Goreng 5 PCS',
       'Rp 5.000',
@@ -47,6 +51,8 @@
         duration: 7000,
         action: () => {
           navigateTo('voucher');
+          // Clear badge when user views
+          badgeStore.clear('voucher');
         },
         actionLabel: 'Lihat Voucher'
       }
@@ -55,6 +61,9 @@
   
   // Demo: Show new points notification
   function showNewPoints() {
+    // Add badge
+    badgeStore.increment('loyalty');
+    
     notificationStore.newPoints(
       150,
       'Belanja di YOGYA Soreang',
@@ -62,6 +71,8 @@
         duration: 7000,
         action: () => {
           navigateTo('loyalty');
+          // Clear badge when user views
+          badgeStore.clear('loyalty');
         },
         actionLabel: 'Lihat Poin'
       }
@@ -76,6 +87,9 @@
       { name: 'Ultra Milk 1L', discount: 'Rp 2.500' }
     ];
     
+    // Add badges for all vouchers
+    badgeStore.increment('voucher', vouchers.length);
+    
     vouchers.forEach((voucher, index) => {
       setTimeout(() => {
         notificationStore.newVoucher(
@@ -85,6 +99,7 @@
             duration: 6000,
             action: () => {
               navigateTo('voucher');
+              badgeStore.clear('voucher');
             }
           }
         );
@@ -108,10 +123,15 @@
         'Total: Rp 250.000',
         { duration: 3000 }
       );
+      
+      // Add transaction badge
+      badgeStore.increment('transaction');
     }, 2000);
     
     // Step 3: Show points earned after 3 seconds
     setTimeout(() => {
+      badgeStore.increment('loyalty');
+      
       notificationStore.newPoints(
         250,
         'Transaksi Rp 250.000',
@@ -119,6 +139,7 @@
           duration: 5000,
           action: () => {
             navigateTo('loyalty');
+            badgeStore.clear('loyalty');
           }
         }
       );
@@ -126,6 +147,8 @@
     
     // Step 4: Show voucher unlocked after 5 seconds
     setTimeout(() => {
+      badgeStore.increment('voucher');
+      
       notificationStore.newVoucher(
         'Free Coffee ☕',
         'Gratis',
@@ -133,6 +156,7 @@
           duration: 6000,
           action: () => {
             navigateTo('voucher');
+            badgeStore.clear('voucher');
           }
         }
       );
@@ -229,6 +253,65 @@
             <div class="btn-large-title">Simulasi Belanja</div>
             <div class="btn-large-desc">Proses → Sukses → Poin → Voucher</div>
           </div>
+        </button>
+      </div>
+    </div>
+
+    <!-- Badge Control Section -->
+    <div class="section">
+      <h3 class="section-title">🔴 Kontrol Badge Notifikasi</h3>
+      <div class="badge-controls">
+        <div class="badge-control-item">
+          <div class="badge-control-label">
+            <span>Voucher Badge</span>
+            <span class="badge-count">{$badgeStore.voucher}</span>
+          </div>
+          <div class="badge-control-buttons">
+            <button class="badge-btn" on:click={() => badgeStore.increment('voucher')}>+</button>
+            <button class="badge-btn" on:click={() => badgeStore.decrement('voucher')}>-</button>
+            <button class="badge-btn clear" on:click={() => badgeStore.clear('voucher')}>Clear</button>
+          </div>
+        </div>
+        
+        <div class="badge-control-item">
+          <div class="badge-control-label">
+            <span>Loyalty Badge</span>
+            <span class="badge-count">{$badgeStore.loyalty}</span>
+          </div>
+          <div class="badge-control-buttons">
+            <button class="badge-btn" on:click={() => badgeStore.increment('loyalty')}>+</button>
+            <button class="badge-btn" on:click={() => badgeStore.decrement('loyalty')}>-</button>
+            <button class="badge-btn clear" on:click={() => badgeStore.clear('loyalty')}>Clear</button>
+          </div>
+        </div>
+        
+        <div class="badge-control-item">
+          <div class="badge-control-label">
+            <span>Promo Badge</span>
+            <span class="badge-count">{$badgeStore.promo}</span>
+          </div>
+          <div class="badge-control-buttons">
+            <button class="badge-btn" on:click={() => badgeStore.increment('promo')}>+</button>
+            <button class="badge-btn" on:click={() => badgeStore.decrement('promo')}>-</button>
+            <button class="badge-btn clear" on:click={() => badgeStore.clear('promo')}>Clear</button>
+          </div>
+        </div>
+        
+        <div class="badge-control-item">
+          <div class="badge-control-label">
+            <span>Transaction Badge</span>
+            <span class="badge-count">{$badgeStore.transaction}</span>
+          </div>
+          <div class="badge-control-buttons">
+            <button class="badge-btn" on:click={() => badgeStore.increment('transaction')}>+</button>
+            <button class="badge-btn" on:click={() => badgeStore.decrement('transaction')}>-</button>
+            <button class="badge-btn clear" on:click={() => badgeStore.clear('transaction')}>Clear</button>
+          </div>
+        </div>
+        
+        <button class="clear-all-badges-btn" on:click={() => badgeStore.clearAll()}>
+          <span class="btn-icon">🗑️</span>
+          <span>Hapus Semua Badge</span>
         </button>
       </div>
     </div>
@@ -497,6 +580,108 @@
   }
 
   .clear-btn:active {
+    transform: scale(0.98);
+  }
+
+  /* Badge Controls */
+  .badge-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .badge-control-item {
+    background: #f8f9fa;
+    padding: 12px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .badge-control-label {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .badge-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    height: 28px;
+    background: #ff3b30;
+    color: white;
+    font-size: 13px;
+    font-weight: 700;
+    border-radius: 14px;
+    padding: 0 8px;
+  }
+
+  .badge-control-buttons {
+    display: flex;
+    gap: 6px;
+  }
+
+  .badge-btn {
+    padding: 6px 12px;
+    border: 1px solid #ddd;
+    background: white;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    color: #333;
+    transition: all 0.2s;
+  }
+
+  .badge-btn:hover {
+    background: #f5f5f5;
+  }
+
+  .badge-btn:active {
+    transform: scale(0.95);
+  }
+
+  .badge-btn.clear {
+    background: #ff3b30;
+    color: white;
+    border-color: #ff3b30;
+  }
+
+  .badge-btn.clear:hover {
+    background: #e63429;
+  }
+
+  .clear-all-badges-btn {
+    width: 100%;
+    padding: 14px;
+    border: 2px solid #ff3b30;
+    background: white;
+    border-radius: 12px;
+    color: #ff3b30;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s;
+    margin-top: 8px;
+  }
+
+  .clear-all-badges-btn:hover {
+    background: #ffebee;
+  }
+
+  .clear-all-badges-btn:active {
     transform: scale(0.98);
   }
 
