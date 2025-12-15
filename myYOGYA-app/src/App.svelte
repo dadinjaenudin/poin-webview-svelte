@@ -18,6 +18,8 @@
   import AppRatingPage from './lib/AppRatingPage.svelte';
   import FeedbackPage from './lib/FeedbackPage.svelte';
   import FAQPage from './lib/FAQPage.svelte';
+  import NotificationDemoPage from './lib/NotificationDemoPage.svelte';
+  import NotificationContainer from './lib/NotificationContainer.svelte';
   import { currentPage, currentSubPage } from './stores/navigation.js';
 
   let showSpinner = true;
@@ -101,6 +103,11 @@
       <VoucherPage />
     </div>
     
+    <!-- Notification Demo Page -->
+    <div data-page="notification-demo" style="display: none;">
+      <NotificationDemoPage />
+    </div>
+    
     <!-- Account Page -->
     <div data-page="account" style="display: none;">
       <!-- Main Account Page -->
@@ -144,6 +151,9 @@
     
     <BottomNav />
   </div>
+  
+  <!-- Notification Container (Always rendered) -->
+  <NotificationContainer />
 </main>
 
 <style>

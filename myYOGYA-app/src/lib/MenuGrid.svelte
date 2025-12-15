@@ -1,5 +1,6 @@
 <script>
   import Scanner from './Scanner.svelte';
+  import { navigateTo } from '../stores/navigation.js';
   
   let showScanner = false;
   let lastScanResult = null;
@@ -67,6 +68,13 @@
       subtitle: 'Transaksi',
       icon: 'history',
       color: '#b39ddb'
+    },
+    {
+      id: 10,
+      title: 'Demo',
+      subtitle: 'Notifikasi',
+      icon: 'notification',
+      color: '#ff6b35'
     }
   ];
 
@@ -74,6 +82,12 @@
     // Open scanner if "Scan Member" clicked
     if (item.icon === 'scan') {
       showScanner = true;
+      return;
+    }
+    
+    // Navigate to notification demo
+    if (item.icon === 'notification') {
+      navigateTo('notification-demo');
       return;
     }
     
@@ -137,6 +151,10 @@
           {:else if item.icon === 'history'}
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
               <path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z" fill="{item.color}"/>
+            </svg>
+          {:else if item.icon === 'notification'}
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+              <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z" fill="{item.color}"/>
             </svg>
           {/if}
         </div>
