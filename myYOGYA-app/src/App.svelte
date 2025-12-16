@@ -21,14 +21,20 @@
   import NotificationDemoPage from './lib/NotificationDemoPage.svelte';
   import NotificationContainer from './lib/NotificationContainer.svelte';
   import WelcomePage from './lib/WelcomePage.svelte';
+  import SplashScreen from './lib/SplashScreen.svelte';
   import { currentPage, currentSubPage } from './stores/navigation.js';
 
+  let showSplash = true;
   let showSpinner = true;
   let isLoggedIn = false; // Track login state
   
   // Check if user is logged in from localStorage
   if (typeof window !== 'undefined') {
     isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+  }
+  
+  function handleSplashComplete() {
+    showSplash = false;
   }
   
   function handleLogin() {
@@ -104,7 +110,10 @@
 {/if}
 
 <main>
-  {#if !isLoggedIn}
+  {#if showSplash}
+    <!-- Splash Screen (shows first) -->
+    <SplashScreen onComplete={handleSplashComplete} />
+  {:else if !isLoggedIn}
     <!-- Welcome Page for non-logged-in users -->
     <WelcomePage 
       on:login={handleLogin}
