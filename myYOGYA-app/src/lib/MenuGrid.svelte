@@ -1,14 +1,10 @@
 <script>
   import Scanner from './Scanner.svelte';
+  import { navigateTo } from '../stores/navigation.js';
+  import { badgeStore, formatBadgeCount } from '../stores/badge.js';
   
   let showScanner = false;
   let lastScanResult = null;
-  
-  // Debug: Watch showScanner changes
-  $: {
-    console.log('MenuGrid reactive: showScanner =', showScanner);
-    console.log('MenuGrid: This should update Scanner via bind:isOpen');
-  }
   
   const menuItems = [
     {
@@ -16,7 +12,8 @@
       title: 'Promo',
       subtitle: '',
       icon: 'promo',
-      color: '#ff6b6b'
+      color: '#ff6b6b',
+      badgeType: 'promo'
     },
     {
       id: 2,
@@ -30,7 +27,8 @@
       title: 'Redeem All',
       subtitle: 'Voucher',
       icon: 'voucher',
-      color: '#ff7043'
+      color: '#ff7043',
+      badgeType: 'voucher'
     },
     {
       id: 4,
@@ -72,24 +70,29 @@
       title: 'Riwayat',
       subtitle: 'Transaksi',
       icon: 'history',
-      color: '#b39ddb'
+      color: '#b39ddb',
+      badgeType: 'transaction'
+    },
+    {
+      id: 10,
+      title: 'Demo',
+      subtitle: 'Notifikasi',
+      icon: 'notification',
+      color: '#ff6b35',
+      badgeType: 'notification'
     }
   ];
 
   function handleMenuClick(item) {
-    console.log('Menu clicked:', item.title, item.icon);
-    
     // Open scanner if "Scan Member" clicked
     if (item.icon === 'scan') {
-      console.log('Opening scanner...');
-      console.log('showScanner before:', showScanner);
       showScanner = true;
-      console.log('showScanner after:', showScanner);
-      
-      // Force reactivity update
-      setTimeout(() => {
-        console.log('showScanner in timeout:', showScanner);
-      }, 100);
+      return;
+    }
+    
+    // Navigate to notification demo
+    if (item.icon === 'notification') {
+      navigateTo('notification-demo');
       return;
     }
     
@@ -97,7 +100,6 @@
   }
   
   function handleScanSuccess(decodedText, decodedResult) {
-    console.log('Scan success:', decodedText);
     lastScanResult = decodedText;
     
     // You can add your logic here, e.g.:
@@ -110,10 +112,7 @@
   }
   
   function handleScannerClose() {
-    console.log('MenuGrid: handleScannerClose called');
-    console.log('MenuGrid: showScanner before:', showScanner);
     showScanner = false;
-    console.log('MenuGrid: showScanner after:', showScanner);
   }
 </script>
 
@@ -121,7 +120,11 @@
   <div class="menu-grid">
     {#each menuItems as item (item.id)}
       <button class="menu-item" on:click={() => handleMenuClick(item)}>
-        <div class="menu-icon" style="background-color: {item.color}20;">
+        <div class="menu-icon-container">
+          {#if item.badgeType && $badgeStore[item.badgeType] > 0}
+            <span class="menu-badge">{formatBadgeCount($badgeStore[item.badgeType])}</span>
+          {/if}
+          <div class="menu-icon" style="background-color: {item.color}20;">
           {#if item.icon === 'promo'}
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
               <path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z" fill="{item.color}"/>
@@ -158,7 +161,12 @@
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
               <path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z" fill="{item.color}"/>
             </svg>
+          {:else if item.icon === 'notification'}
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+              <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z" fill="{item.color}"/>
+            </svg>
           {/if}
+          </div>
         </div>
         <div class="menu-text">
           <div class="menu-title">{item.title}</div>
@@ -213,6 +221,31 @@
 
   .menu-item:active {
     transform: translateY(-2px);
+  }
+
+  .menu-icon-container {
+    position: relative;
+    display: inline-block;
+  }
+
+  .menu-badge {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: #ff3b30;
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    min-width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 6px;
+    box-shadow: 0 2px 6px rgba(255, 59, 48, 0.4);
+    z-index: 2;
+    border: 2px solid white;
   }
 
   .menu-icon {
