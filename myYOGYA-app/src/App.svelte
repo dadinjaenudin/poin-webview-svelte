@@ -20,9 +20,33 @@
   import FAQPage from './lib/FAQPage.svelte';
   import NotificationDemoPage from './lib/NotificationDemoPage.svelte';
   import NotificationContainer from './lib/NotificationContainer.svelte';
+  import WelcomePage from './lib/WelcomePage.svelte';
   import { currentPage, currentSubPage } from './stores/navigation.js';
 
   let showSpinner = true;
+  let isLoggedIn = false; // Track login state
+  
+  // Check if user is logged in from localStorage
+  if (typeof window !== 'undefined') {
+    isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+  }
+  
+  function handleLogin() {
+    // In production, this would validate credentials
+    localStorage.setItem('isLoggedIn', 'true');
+    isLoggedIn = true;
+  }
+  
+  function handleRegister() {
+    // In production, this would create new account
+    localStorage.setItem('isLoggedIn', 'true');
+    isLoggedIn = true;
+  }
+  
+  function handleLogout() {
+    localStorage.setItem('isLoggedIn', 'false');
+    isLoggedIn = false;
+  }
   
   // Use browser API directly to handle loading state
   if (typeof window !== 'undefined') {
@@ -80,7 +104,15 @@
 {/if}
 
 <main>
-  <div class="app-container" class:hidden={showSpinner}>
+  {#if !isLoggedIn}
+    <!-- Welcome Page for non-logged-in users -->
+    <WelcomePage 
+      on:login={handleLogin}
+      on:register={handleRegister}
+    />
+  {:else}
+    <!-- Main App for logged-in users -->
+    <div class="app-container" class:hidden={showSpinner}>
     <!-- Home Page -->
     <div data-page="home" style="display: block;">
       <Header />
@@ -149,11 +181,12 @@
       </div>
     </div>
     
-    <BottomNav />
-  </div>
-  
-  <!-- Notification Container (Always rendered) -->
-  <NotificationContainer />
+      <BottomNav />
+    </div>
+    
+    <!-- Notification Container (Always rendered for logged-in users) -->
+    <NotificationContainer />
+  {/if}
 </main>
 
 <style>

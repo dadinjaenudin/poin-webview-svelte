@@ -126,8 +126,10 @@
 
   function handleLogout() {
     if (confirm('Apakah Anda yakin ingin keluar?')) {
-      // Here you would handle logout logic
-      navigateTo('home');
+      // Clear login status
+      localStorage.setItem('isLoggedIn', 'false');
+      // Reload page to show welcome screen
+      window.location.reload();
     }
   }
 </script>
